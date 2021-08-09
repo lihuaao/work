@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no" />
+    <title>周考一</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <script src="./js/bscroll.js"></script>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div class="ipt">
+                <input type="text" placeholder="搜索花型、工艺">
+                <i class="iconfont icon-fangdajing"></i>
+            </div>
+            <div class="head">
+                <div class="head-smart">
+                    <i class="iconfont icon-zhaoxiangji"></i>
+                    <p>智能搜花型</p>
+                </div>
+                <div class="head-title">
+                    <dl>
+                        <dt>
+                            <i class="iconfont icon-fabuqiugou"></i>
+                        </dt>
+                        <dd>
+                            <h3 class="left">发布求购</h3>
+                            <p>30秒发布消息</p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <i class="iconfont icon-shangpin"></i>
+                        </dt>
+                        <dd>
+                            <h3 class="right">发布商品</h3>
+                            <p>获取更多曝光</p>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </header>
+        <div class="min">
+            <div class="box">
+                <h2>推荐商品</h2>
+                <div class="content">
+                    <!-- <div class="code"></div> -->
+                    <!-- <div class="code"></div> -->
+                    <!-- <dl>
+                        <dt>
+                            <img src="./image/图1.png" alt="">
+                        </dt>
+                        <dd>
+                            <h3>珠片绣订花sx-1126</h3>
+                            <p>3d重手工 <span>现货</span></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="./image/图3.png" alt="">
+                        </dt>
+                        <dd>
+                            <h3>珠片绣订花sx-1126</h3>
+                            <p>3d重手工 <span>现货</span></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="./image/图4.png" alt="">
+                        </dt>
+                        <dd>
+                            <h3>珠片绣订花sx-1126</h3>
+                            <p>3d重手工 <span>现货</span></p>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>
+                            <img src="./image/图3.png" alt="">
+                        </dt>
+                        <dd>
+                            <h3>珠片绣订花sx-1126</h3>
+                            <p>3d重手工 <span>现货</span></p>
+                        </dd>
+                    </dl> -->
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div>
+                <i class="iconfont icon-shouye"></i>
+            </div>
+            <div>
+                <i class="iconfont icon-detail"></i>
+            </div>
+            <div>
+                <i class="iconfont icon-xinxi"></i>
+            </div>
+            <div>
+                <i class="iconfont icon-icon-test"></i>
+            </div>
+        </footer>
+    </div>
+    <script src="./js/ajax.js"></script>
+    <script>
+        window.onload = function () {
+            let ipt = document.querySelector(".ipt")
+            ipt.onclick = () => {
+                location.href = "./html/search.html"
+            }
+            let render = (data) => {
+                console.log(data);
+                data.forEach(() => {
+                    content.innerHTML = data.map(function (val, i) {
+                        return `
+                        <dl>
+                            <dt>
+                                <img src="${val.img}" alt="">
+                            </dt>
+                            <dd>
+                                <h3>珠片绣订花sx-1126</h3>
+                                <p>3d重手工 <span>现货</span></p>
+                            </dd>
+                        </dl>
+                        `
+                    }).join("")
+                })
+                let dl = [...document.querySelectorAll(".content dl")]
+                console.log(dl);
+                let img = [...document.querySelectorAll(".content dl dt img")]
+                var dlOne = dl[0]
+                console.log(dlOne);
+                list(dl, dlOne, img)
+            }
+
+            ajax("get", "./index.json", () => {
+
+            }, (res) => {
+                let data = JSON.parse(res)
+                console.log(data);
+                render(data.list)
+            })
+            var content = document.querySelector(".content")
+            var gap = 10;
+            function list(dl, dlOne, img) {
+                var clientWidth = dlOne.offsetWidth // 得到第一个盒子的宽度
+                var pageWidth = getClient().width // 得到整个页面的宽度
+                var line = parseInt(pageWidth / (clientWidth + gap)) // 得到列数
+
+                var arr = []
+                for (var i = 0; i < dl.length; i++) {
+                    if (i < line) {
+                        dl[i].style.top = 0;
+                        dl[i].style.left = (clientWidth + gap) * i + "px";
+                        arr.push(dl[i].offsetHeight)
+                    } else {
+                        var minHeight = arr[0]; // 假设 最小的高度为数组第一个
+                        var index = 0;
+                        for (var j = 0; j < arr.length; j++) {
+                            // 进行判断  得出最小的高度 及相对应的下标
+                            if (minHeight > arr[j]) {
+                                minHeight = arr[j];
+                                index = j;
+                            }
+                        }
+                        //设置下一行的第一个盒子的位置
+                        //top值就是最小列的高度+gap
+                        dl[i].style.top = arr[index] + gap + "px"; // 可以理解为加了一个 top 的外边距
+
+
+                        // 盒子通过定位 进行left 的偏移 index 就是第一排盒子的锁定的地方 得到他的偏移量 将其赋予给当前盒子 使其直接来到第一排盒子的下方
+                        dl[i].style.left = dl[index].offsetLeft + "px";
+
+
+                        //修改最小列的高度
+                        //最小列的高度 = 当前自己的高度 + 拼接过来的高度 + 间隙的高度
+                        arr[index] = arr[index] + dl[i].offsetHeight + gap;
+                    }
+                }
+            }
+            function getClient() {
+                return {
+                    width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+                    height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
